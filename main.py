@@ -2,39 +2,34 @@ import pygame
 
 from soldier import Soldier
 
+from x import Control
+
 pygame.init()
-
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = int(SCREEN_WIDTH * 0.8)
-
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Shooter")
 
 clock = pygame.time.Clock()
 FPS = 60
 
-player = Soldier(screen, "player", 200, 200, 3, 5)
-enemy = Soldier(screen, "enemy", 400, 200, 3, 5)
+control = Control(20)
+
+player = control.player
 
 run = True
 
 
 def draw_bg():
-    screen.fill((144, 201, 120))
-    pygame.draw.line(screen, (255, 0, 0), (0, 300), (SCREEN_WIDTH, 300))
+    control.screen.fill((144, 201, 120))
+    pygame.draw.line(control.screen, (255, 0, 0), (0, 300), (control.SCREEN_WIDTH, 300))
 
 
 while run:
 
     clock.tick(FPS)
     draw_bg()
-    player.update_animation()
-    enemy.draw()
-    enemy.update_animation()
-    player.draw()
-    player.move()
+
+    control.update()
 
     if player.alive:
+        control.make_shoot(player.rect.centerx + (player.direction * 50), player.rect.centery, player.direction)
 
         if player.flay:
             player.update_action(2)
@@ -57,14 +52,15 @@ while run:
                 player.flay = True
 
             if event.key == pygame.K_SPACE:
-                run = False
+                control.shoot = True
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a:
                 player.moving_left = False
-
             if event.key == pygame.K_d:
                 player.moving_right = False
+            if event.key == pygame.K_SPACE:
+                control.shoot = False
 
     pygame.display.update()
 

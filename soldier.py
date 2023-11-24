@@ -17,6 +17,9 @@ class Soldier(pygame.sprite.Sprite):
         self.flip = False
         self.flay = False
 
+        self.health = 100
+        self.max_health = self.health
+
         self.animation_list = []
         self.action = 0
         self.frame_index = 0
@@ -24,7 +27,7 @@ class Soldier(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         temp_list = []
 
-        animation_types = ["Idle", "Run", "Jump"]
+        animation_types = ["Idle", "Run", "Jump", "Death"]
         for animation in animation_types:
             temp_list = []
             num_of_frames = len(os.listdir(f"./Code/img/{char_type}/{animation}"))
@@ -37,6 +40,11 @@ class Soldier(pygame.sprite.Sprite):
         self.image = self.animation_list[self.action][self.frame_index]
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
+
+    def update(self):
+        self.move()
+        self.draw()
+        self.update_animation()
 
     def move(self):
         dx = 0
@@ -73,7 +81,11 @@ class Soldier(pygame.sprite.Sprite):
     def update_animation(self):
         ANIMATION_COOLDOWN = 120
         if self.frame_index >= len(self.animation_list[self.action]):
-            self.frame_index = 0
+            if self.action == 3:
+                self.frame_index = len(self.animation_list[self.action]) - 1
+                # self.animation_list[self.action][len(self.animation_list[self.action])]
+            else:
+                self.frame_index = 0
 
         self.image = self.animation_list[self.action][self.frame_index]
         if pygame.time.get_ticks() - self.update_time > ANIMATION_COOLDOWN:
@@ -85,6 +97,13 @@ class Soldier(pygame.sprite.Sprite):
             self.frame_index = 0
             self.action = new_action
             self.update_time = pygame.time.get_ticks()
+
+    def check_alive(self):
+        if self.health <= 0:
+            self.health = 0
+            self.speed = 0
+            self.alive = False
+            self.update_action(3)
 
     def draw(self):
         self.screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
