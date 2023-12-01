@@ -3,7 +3,7 @@ import os
 
 
 class Soldier(pygame.sprite.Sprite):
-    def __init__(self, screen, char_type, x, y, scale, speed):
+    def __init__(self, screen, char_type, x, y, scale, speed, grenades):
         self.alive = True
         self.char_type = char_type
         self.moving_left = False
@@ -16,6 +16,11 @@ class Soldier(pygame.sprite.Sprite):
         self.gravity = 0.75
         self.flip = False
         self.flay = False
+
+        self.grenades = grenades
+
+        self.ammo = 20
+        self.start_ammo = self.ammo
 
         self.health = 100
         self.max_health = self.health
