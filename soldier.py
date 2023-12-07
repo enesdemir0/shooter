@@ -19,6 +19,9 @@ class Soldier(pygame.sprite.Sprite):
 
         self.grenades = grenades
 
+        self.shoot = False
+        self.shoot_cooldown = 0
+
         self.ammo = 20
         self.start_ammo = self.ammo
 
@@ -29,6 +32,12 @@ class Soldier(pygame.sprite.Sprite):
         self.action = 0
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
+
+        self.move_counter = 0
+        self.idling = False
+        self.idling_counter = 0
+        self.vision = pygame.Rect(0, 0, 200, 20)
+
         pygame.sprite.Sprite.__init__(self)
         temp_list = []
 
@@ -47,7 +56,7 @@ class Soldier(pygame.sprite.Sprite):
         self.rect.center = (x, y)
 
     def update(self):
-        self.move()
+
         self.draw()
         self.update_animation()
 
@@ -82,6 +91,8 @@ class Soldier(pygame.sprite.Sprite):
 
         self.rect.x += dx
         self.rect.y += dy
+
+
 
     def update_animation(self):
         ANIMATION_COOLDOWN = 120

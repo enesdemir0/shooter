@@ -1,6 +1,5 @@
 import pygame
 
-from soldier import Soldier
 from x import Control
 from bullet import ItemBox
 
@@ -31,11 +30,11 @@ def draw_bg():
 while run:
     clock.tick(FPS)
     draw_bg()
-
+    control.player.move()
     control.update()
 
     if player.alive:
-        control.make_shoot(player.rect.centerx + (player.direction * 50), player.rect.centery, player.direction)
+        control.make_shoot(control.player, player.rect.centerx + (player.direction * 5), player.rect.centery, player.direction)
         if control.grenade and not control.grenade_thrown and control.player.grenades > 0:
             grenade = control.create_grenade()
             control.grenade_group.add(grenade)
@@ -62,7 +61,7 @@ while run:
                 player.jump = True
                 player.flay = True
             if event.key == pygame.K_SPACE:
-                control.shoot = True
+                control.player.shoot = True
             if event.key == pygame.K_r:
                 control.grenade = True
 
@@ -72,7 +71,7 @@ while run:
             if event.key == pygame.K_d:
                 player.moving_right = False
             if event.key == pygame.K_SPACE:
-                control.shoot = False
+                control.player.shoot = False
             if event.key == pygame.K_r:
                 control.grenade = False
                 control.grenade_thrown = False

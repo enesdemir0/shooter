@@ -1,3 +1,5 @@
+import random
+
 import pygame
 
 from soldier import Soldier
@@ -11,11 +13,10 @@ class Control:
         self.SCREEN_HEIGHT = int(self.SCREEN_WIDTH * 0.8)
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         pygame.display.set_caption("Shooter")
-        self.player = Soldier(self.screen, "player", 200, 200, 3, 5, 5)
-        self.shoot = False
+        self.player = Soldier(self.screen, "player", 200, 200, 1.65, 5, 5)
+
         self.grenade = False
         self.grenade_thrown = False
-        self.shoot_cooldown = 0
 
         self.bullet_group = pygame.sprite.Group()
         self.grenade_group = pygame.sprite.Group()
@@ -35,18 +36,53 @@ class Control:
             "Grenade": grenade_box_img,
         }
 
-        self.enemy = Soldier(self.screen, "enemy", 200, 200, 3, 5, 0)
+        self.enemy = Soldier(self.screen, "enemy", 500, 300, 1.65, 2, 0)
         self.enemy_group.add(self.enemy)
-        self.enemy1 = Soldier(self.screen, "enemy", 500, 200, 3, 5, 0)
+        self.enemy1 = Soldier(self.screen, "enemy", 300, 300, 1.65, 2, 0)
         self.enemy_group.add(self.enemy1)
         self.font = pygame.font.SysFont("Futura", 30)
 
-    def make_shoot(self, x_cor, y_cor, direction):
-        if self.shoot and self.shoot_cooldown == 0 and self.player.ammo > 0:
-            self.shoot_cooldown = 20
+    def make_shoot(self, player, x_cor, y_cor, direction):
+        if player.shoot and player.shoot_cooldown == 0 and player.ammo > 0:
+            player.shoot_cooldown = 20
             bullet = Bullet(x_cor, y_cor, direction)
             self.bullet_group.add(bullet)
-            self.player.ammo -= 1
+            player.ammo -= 1
+
+    def ai(self, enemy):
+        if not self.player.alive:
+            enemy.idling = True
+            enemy.update_action(0)
+        if enemy.alive and self.player.alive:
+            if not enemy.idling and random.randint(1, 200) == 1:
+                enemy.idling = True
+                enemy.update_action(0)
+                enemy.idling_counter = 50
+
+            if enemy.vision.colliderect(self.player.rect):
+                enemy.update_action(0)
+                enemy.shoot = True
+                self.make_shoot(enemy, enemy.rect.centerx + (enemy.direction * 10), enemy.rect.centery, enemy.direction)
+            else:
+                if not enemy.idling:
+                    if enemy.direction == 1:
+                        enemy.moving_right = True
+                    else:
+                        enemy.moving_right = False
+                    enemy.moving_left = not enemy.moving_right
+                    enemy.move()
+
+                    enemy.move_counter += 1
+                    enemy.vision.center = (enemy.rect.centerx + 95 * enemy.direction, enemy.rect.centery)
+                    pygame.draw.rect(self.screen, (255, 0, 0), enemy.vision)
+                    enemy.update_action(1)
+                    if enemy.move_counter > 80:
+                        enemy.direction *= -1
+                        enemy.move_counter *= -1
+                else:
+                    enemy.idling_counter -= 1
+                    if enemy.idling_counter == 0:
+                        enemy.idling = False
 
     def create_grenade(self):
         return Grenade(self.player.rect.centerx + (self.player.direction * 50), self.player.rect.top,
@@ -58,7 +94,6 @@ class Control:
 
     def draw_health(self, x, y):
         health = self.player.health
-
         pygame.draw.rect(self.screen, (255, 255, 255), (x - 2, y - 2.5, (self.player.max_health * 5) + 103, 10), 1)
 
         for z in range(health):
@@ -66,8 +101,12 @@ class Control:
             x += 6
 
     def update(self):
-
         for enemy in self.enemy_group:
+            self.ai(enemy)
+
+            if enemy.shoot_cooldown != 0:
+                enemy.shoot_cooldown -= 1
+
             enemy.update()
             enemy.check_alive()
 
@@ -91,8 +130,9 @@ class Control:
 
         self.player.check_alive()
 
-        if self.shoot_cooldown != 0:
-            self.shoot_cooldown -= 1
+        if self.player.shoot_cooldown != 0:
+            self.player.shoot_cooldown -= 1
+
         # check collision with characters
         for enemy in self.enemy_group:
             self.bullet_group.update(enemy, self.bullet_group)
