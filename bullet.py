@@ -6,7 +6,7 @@ class Bullet(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         self.speed = 10
-        self.image = pygame.image.load("./Code/img/icons/bullet.png").convert_alpha()
+        self.image = pygame.image.load("img/icons/bullet.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.direction = direction
@@ -30,7 +30,7 @@ class Grenade(pygame.sprite.Sprite):
         self.timer = 100
         self.speed = 7
         self.vel_y = -11
-        self.image = pygame.image.load("./Code/img/icons/grenade.png").convert_alpha()
+        self.image = pygame.image.load("img/icons/grenade.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.direction = direction
@@ -72,7 +72,7 @@ class Explosion(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.images = []
         for num in range(1, 6):
-            img = pygame.image.load(f"./Code/img/explosion/exp{num}.png").convert_alpha()
+            img = pygame.image.load(f"img/explosion/exp{num}.png").convert_alpha()
             img = pygame.transform.scale(img, (int(img.get_width() * scale), int(img.get_height() * scale)))
             self.images.append(img)
         self.frame_index = 0
