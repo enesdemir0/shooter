@@ -44,9 +44,9 @@ class Soldier(pygame.sprite.Sprite):
         animation_types = ["Idle", "Run", "Jump", "Death"]
         for animation in animation_types:
             temp_list = []
-            num_of_frames = len(os.listdir(f"./Code/img/{char_type}/{animation}"))
+            num_of_frames = len(os.listdir(f"img/{char_type}/{animation}"))
             for i in range(num_of_frames):
-                img = pygame.image.load(f"./Code/img/{char_type}/{animation}/{i}.png")
+                img = pygame.image.load(f"img/{char_type}/{animation}/{i}.png")
                 img = pygame.transform.scale(img, (int(img.get_width() * scale), int(img.get_height() * scale)))
                 temp_list.append(img)
             self.animation_list.append(temp_list)
