@@ -27,7 +27,7 @@ class Control:
         self.grenade_img = pygame.image.load("img/icons/grenade.png").convert_alpha()
 
         heal_box_img = pygame.image.load("img/icons/health_box.png").convert_alpha()
-        ammo_box_img = pygame.image.load(".img/icons/ammo_box.png").convert_alpha()
+        ammo_box_img = pygame.image.load("img/icons/ammo_box.png").convert_alpha()
         grenade_box_img = pygame.image.load("img/icons/grenade_box.png").convert_alpha()
 
         self.item_boxes = {
