@@ -23,12 +23,12 @@ class Control:
         self.enemy_group = pygame.sprite.Group()
         self.item_box_group = pygame.sprite.Group()
 
-        self.bullet_img = pygame.image.load("./Code/img/icons/bullet.png").convert_alpha()
-        self.grenade_img = pygame.image.load("./Code/img/icons/grenade.png").convert_alpha()
+        self.bullet_img = pygame.image.load("img/icons/bullet.png").convert_alpha()
+        self.grenade_img = pygame.image.load("img/icons/grenade.png").convert_alpha()
 
-        heal_box_img = pygame.image.load("./Code/img/icons/health_box.png").convert_alpha()
-        ammo_box_img = pygame.image.load("./Code/img/icons/ammo_box.png").convert_alpha()
-        grenade_box_img = pygame.image.load("./Code/img/icons/grenade_box.png").convert_alpha()
+        heal_box_img = pygame.image.load("img/icons/health_box.png").convert_alpha()
+        ammo_box_img = pygame.image.load(".img/icons/ammo_box.png").convert_alpha()
+        grenade_box_img = pygame.image.load("img/icons/grenade_box.png").convert_alpha()
 
         self.item_boxes = {
             "Health": heal_box_img,
